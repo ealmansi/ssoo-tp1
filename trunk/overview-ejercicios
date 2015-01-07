@@ -1,0 +1,35 @@
+Ejercicio  1 ()
+Programar tarea TaskConsola
+
+Ejercicio  2 (1)
+Escribir un lote de 3 tareas (1 TaskCPU, 2 TaskConsola). Graficar usando el algoritmo FCFS para 1, 2 y 3 nucleos.
+
+Ejercicio  6 ()
+Programar tarea TaskBatch
+
+---------------------------------
+
+Ejercicio  3 ()
+Implementar scheduler Round-Robin (sched_rr.cpp).
+
+Ejercicio  4 (3)
+Escribir uno o mas lotes de tareas para graficar usando el algoritmo Round-Robin.
+
+Ejercicio  8 (3)
+Implemente scheduler Round-Robin-2 (sched_rr2.cpp). Realizar experimentos para comparar Round-Robin y Round-Robin-2.
+
+---------------------------------
+
+Ejercicio  5 ()
+Implementar scheduler Earliest-Deadline-First (sched_edf.cpp), el del paper.
+
+Ejercicio 10 (5)
+Realizar experimentos que demuestren que SchedEDF no necesariamente cumple los deadlines con más de un núcleo.
+
+---------------------------------
+
+Ejercicio  7 (3, 6)
+Escribir un lote de tareas TaskBatch. Simular el lote utilizando el algoritmo SchedRR para varios valores de quantum y cantidad de núcleos. Elegir al menos dos metricas y concluir el valor óptimo de quantum para cada métrica.
+
+Ejercicio  9 (3, 5, 8)
+Realizar experimentos donde SchedEDF cumpla los deadlines de las tareas y los demás schedulers no. (usando 1 núcleo)

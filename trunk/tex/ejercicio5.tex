@@ -1,0 +1,47 @@
+\section{Ejercicio 5}
+
+\subsection{Introducción}
+
+Este ejercicio consiste en la implementación de un \textit{scheduler}, \textbf{SchedEDF}, basado en el algoritmo \textit{Relative urgency} para sistemas de tiempo real según el paper \textit{Multiprogramming for Hybrid Computation} publicado por Fineberg y Serlin.\\
+
+Según este algoritmo las tareas deben recibir el uso del CPU en base a los \textbf{deadlines}(tiempo antes del cuál debe completarse) correspondientes a cada una priorizando aquellas cuyo \textbf{deadline} es más eminente. Para su implementación el algoritmo del paper se vale de una tabla o pila en la cual las tareas son ordenadas según su \textbf{deadline} priorizando aquellas con \textbf{deadline} más cercano.\\
+Ante cada interrupción del clock el scheduler compara el \textbf{deadline} de la tarea en ejecución con el \textbf{deadline} de la primera tarea de la pila, si el \textbf{deadline} de la tarea de la pila es menor, cambia la tarea en ejecución por la primera tarea de la pila, caso contrario sigue con la tarea en ejecución.\\
+Al agregarse una nueva tarea se actualizan los \textbf{deadlines} de las tareas restándoles el tiempo transcurrido.\\
+Cuando una tarea termina se la quita de la pila.
+
+\subsection{Decisiones}
+
+En la implementación de este algoritmo en nuestro simulador \textit{simusched} hubo que tomar ciertas decisiones ante casos que no estaban contemplados en el paper (como ser el caso de \textbf{multicore}) o por limitaciones de nuestro simulador.\\
+A continuación enumeramos dichas decisiones:
+
+\begin{itemize}
+\item{El paper contempla el caso de un único cpu, ante el caso de múltiples cpu se decidió que en caso de tener que remover una tarea en ejecución se removerá de entre las que se están ejecutando aquella con mayor \textbf{deadline}.}
+\item{En nuestro simulador comprobamos que los \textit{ticks} de los cpus y las órdenes de cargas de tareas no vienen siempre en el mismo orden, es decir, por ejemplo ante el caso de 2 cpus (\textit{$cpu_0$} y \textit{$cpu_1$}) si al comenzar el simulador ejecuta la orden de \textbf{load()} antes de los \textit{ticks} de dicho ciclo, esto no garantiza que más adelante respete dicho orden pudiendo ejecutar la orden de \textbf{load()} al finalizar o entre medio de \textit{ticks}. Lo mismo sucede con los \textit{ticks} de los cpus, al comenzar ocurre primero el \textit{tick} del \textit{$cpu_0$} y más adelante en los ciclos posteriores puede ocurrir primero el tick del \textit{$cpu_1$} y luego volver a ser el primero el \textit{tick} del \textit{$cpu_0$}. Ante esta situación a fin de contar el tiempo transcurrido para restar a los \textbf{deadlines} decidimos restar el promedio de los \textit{ticks} transcurridos hasta ese momento}
+\end{itemize}
+
+\subsection{Detalles de la implementación}
+
+Para la implementación de este scheduler se utiliza una estructura de datos llamada \textbf{Job}. Un \textbf{Job} consiste de un \textit{pid} y un \textit{deadline}.\\
+Para llevar registro de las tareas el scheduler utiliza 3 vectores$<\textbf{Job}>$:
+\begin{itemize}
+\item{\textbf{running:} es el que almacena las tareas que se están ejecutando.}
+\item{\textbf{ready:} es el que almacena las tareas que están esperando para ser ejecutadas.}
+\item{\textbf{blocked:} es el que almacena las tareas que recibieron una llamada bloqueante y están a la espera de su desbloqueo.}
+\end{itemize}
+ 
+Ante la carga de una nueva tarea se llama a la función \textit{actualizar} la cual se encarga de recalcular los \textbf{deadlines} de todas las tareas en el scheduler, se agrega la tarea al vector \textbf{ready} y se lo reordena según los \textbf{deadlines} de las tareas en él.\\
+\\
+Cuando llega al scheduler un \textit{tick} proveniente de algún cpu se chequea el motivo del mismo y se procede según lo siguiente:
+\begin{itemize}
+\item{\textit{TICK:} Se incrementa el contador de ticks.}
+\item{\textit{BLOCK:} Se procede a quitar la tarea del vector \textbf{running} y se la agrega al vector \textbf{blocked}.}
+\item{\textit{EXIT:} Se procede a quitar la tarea del vector \textbf{running}.}
+\end{itemize}
+Finalmente se llama a la función \textbf{próximo}.\\
+\\
+La función \textbf{próximo} es la encargada de decidir cuál tarea ejecutar en el próximo ciclo. Para esto compara el \textbf{deadline} de la tarea en ejecución con el \textbf{deadline} de la primera tarea del vector \textbf{ready} devolviendo aquella con menor \textbf{deadline}. En caso que no haya tareas pendientes devuelve la tarea \textit{IDLE}.\\
+\\
+La función \textbf{unblock} es la encargada de quitar la tarea del vector \textbf{blocked} y agregarla al vector \textbf{ready}.
+ 
+ 
+

@@ -1,0 +1,12 @@
+# Rendimiento (throughput): maximizar el número de procesos terminados por unidad de tiempo.
+#   equivalente a minimizar tiempo requerido hasta terminar el lote
+# Eficiencia: tratar de que la CPU esté ocupada todo el tiempo.
+#   equivalente a minimizar cantidad de ticks consumidos por la tarea IDLE
+
+@0:
+TaskBatch 50 3
+TaskBatch 50 10
+TaskBatch 50 20
+TaskBatch 100 3
+TaskBatch 100 10
+TaskBatch 100 20
